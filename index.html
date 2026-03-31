@@ -3,16 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keensight Dropdown</title>
+    <title>Keensight2 | Documentation</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; padding: 50px; }
+        /* General Page Styling */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
+            padding: 50px; 
+            line-height: 1.5;
+            color: #24292f;
+        }
 
-        /* The Container */
-        .dropdown { position: relative; display: inline-block; }
+        h2 { border-bottom: 1px solid #d0d7de; padding-bottom: 10px; }
 
-        /* The Main Button */
+        /* The Dropdown Container */
+        .dropdown { 
+            position: relative; 
+            display: inline-block; 
+            float: right; /* Aligns to the right like your screenshot */
+        }
+
+        /* The Main Action Button */
         .drop-btn {
-            background-color: white;
+            background-color: #ffffff;
             border: 1px solid #d0d7de;
             border-radius: 6px;
             padding: 5px 12px;
@@ -21,47 +33,66 @@
             align-items: center;
             gap: 8px;
             font-weight: 500;
-            color: #24292f;
+            font-size: 14px;
+            transition: background 0.2s;
         }
 
         .drop-btn:hover { background-color: #f6f8fa; }
 
-        /* The Hidden Menu */
+        /* The Hidden Menu Card */
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
+            top: 100%;
             background-color: white;
-            min-width: 280px;
+            min-width: 300px;
             box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
             border: 1px solid #d0d7de;
             border-radius: 12px;
-            z-index: 1;
-            margin-top: 4px;
+            z-index: 100;
+            margin-top: 8px;
             padding: 8px;
         }
 
-        /* Show the menu when active */
+        /* Toggle Visibility Class */
         .dropdown.active .dropdown-content { display: block; }
 
-        /* Dropdown Items */
+        /* Individual Menu Rows */
         .menu-item {
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 12px;
             text-decoration: none;
             color: #24292f;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             gap: 12px;
+            transition: background 0.2s;
         }
 
         .menu-item:hover { background-color: #f6f8fa; }
 
-        .item-text b { display: block; font-size: 14px; }
+        .item-text b { display: block; font-size: 14px; margin-bottom: 2px; }
         .item-text span { font-size: 12px; color: #656d76; }
 
-        .icon { width: 32px; height: 32px; background: #f0f0f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+        /* Icon Square Styling */
+        .icon { 
+            width: 32px; 
+            height: 32px; 
+            background: #eff1f3; 
+            border-radius: 6px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+
+        /* Styling for the snippet content */
+        .content-area { margin-top: 60px; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow: auto; }
     </style>
 </head>
 <body>
@@ -69,11 +100,11 @@
     <div class="dropdown" id="myDropdown">
         <button class="drop-btn" onclick="toggleMenu()">
             <span>📋 Copy Page</span>
-            <small>▼</small>
+            <small style="font-size: 8px; margin-left: 5px;">▼</small>
         </button>
         
         <div class="dropdown-content">
-            <div class="menu-item" onclick="copyContent('Markdown Text Here')">
+            <div class="menu-item" onclick="copyRawMarkdown()">
                 <div class="icon">M↓</div>
                 <div class="item-text">
                     <b>Copy Raw Markdown</b>
@@ -81,34 +112,69 @@
                 </div>
             </div>
 
-            <div class="menu-item" onclick="window.open('https://chatgpt.com', '_blank')">
+            <hr style="border: 0; border-top: 1px solid #d0d7de; margin: 4px 0;">
+
+            <div class="menu-item" onclick="referToAI('chatgpt')">
                 <div class="icon">GPT</div>
                 <div class="item-text">
                     <b>Reference in ChatGPT</b>
                     <span>Ask questions about this page</span>
                 </div>
             </div>
+
+            <div class="menu-item" onclick="referToAI('claude')">
+                <div class="icon">CL</div>
+                <div class="item-text">
+                    <b>Reference in Claude</b>
+                    <span>Ask questions about this page</span>
+                </div>
+            </div>
         </div>
     </div>
 
+    <div class="content-area">
+        <h2>Project Documentation</h2>
+        <p>This is your live documentation site hosted via GitHub Actions.</p>
+        <pre id="pageContent">Analyze this documentation: # Keensight2 Project Info</pre>
+    </div>
+
     <script>
-        // Toggle the menu visibility
+        // Toggle Dropdown Display
         function toggleMenu() {
             document.getElementById("myDropdown").classList.toggle("active");
         }
 
-        // Copy function
-        function copyContent(text) {
-            navigator.clipboard.writeText(text);
-            alert("Copied to clipboard!");
-            document.getElementById("myDropdown").classList.remove("active");
-        }
-
-        // Close menu if user clicks outside
+        // Close dropdown if user clicks outside
         window.onclick = function(event) {
             if (!event.target.closest('.dropdown')) {
                 document.getElementById("myDropdown").classList.remove("active");
             }
+        }
+
+        // Function 1: Copy to Clipboard
+        function copyRawMarkdown() {
+            const text = document.getElementById("pageContent").innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Markdown copied!");
+                document.getElementById("myDropdown").classList.remove("active");
+            });
+        }
+
+        // Function 2: Open AI with Auto-Prompt
+        function referToAI(platform) {
+            const pageUrl = window.location.href;
+            const prompt = `Analyze this documentation: ${pageUrl}`;
+            const encodedPrompt = encodeURIComponent(prompt);
+            
+            let url = "";
+            if (platform === 'chatgpt') {
+                url = `https://chatgpt.com/?q=${encodedPrompt}`;
+            } else if (platform === 'claude') {
+                url = `https://claude.ai/new?q=${encodedPrompt}`;
+            }
+
+            window.open(url, '_blank');
+            document.getElementById("myDropdown").classList.remove("active");
         }
     </script>
 
