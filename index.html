@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Static Site</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Code Snippet</h2>
+        <pre id="textToCopy">git commit -m "Initial commit"</pre>
+        <button onclick="copyText()">Copy Text</button>
+    </div>
+
+    <script>
+        function copyText() {
+            // Get the text from the element
+            const text = document.getElementById("textToCopy").innerText;
+            
+            // Use the Clipboard API
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Copied to clipboard!");
+            });
+        }
+    </script>
+</body>
+</html>
